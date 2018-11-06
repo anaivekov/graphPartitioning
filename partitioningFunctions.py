@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import networkx as nx
 from graphLoading import load_graph
 
 # the method computes cut for a given graph and bipartition
@@ -8,9 +7,9 @@ def cut(G, P2):
     cut = 0
     V = G.nodes()
     E = G.edges(data=True)
-    print(E)
+    #print(E)
     #print("vertices: ")
-    print(V)
+    #print(V)
     vertex_index = 0
     for partition_label in P2:
         if partition_label == 1:
