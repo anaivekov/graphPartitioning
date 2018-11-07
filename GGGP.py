@@ -4,8 +4,10 @@ from graphLoading import load_graph
 from partitioningFunctions import cut, external_cost, internal_cost
 from random import randint
 import operator
+import networkx as nx
+import time
 
-def update_gains(G, V_new, labels, U, new_vertex):
+def update_gains(G, V_new, labels, U, new_vertex, adjacency):
     #print("--- in the update_gains method ---")
     E = G.edges(data=True) 
     U_new = U
@@ -24,7 +26,7 @@ def update_gains(G, V_new, labels, U, new_vertex):
         #print("vertex to add: " + str(vertex_to_add))
         if vertex_to_add not in V_new:
             neighbor_gain = external_cost(G, labels, 
-                          vertex_to_add) - internal_cost(G, labels, vertex_to_add)
+                          vertex_to_add, adjacency) - internal_cost(G, labels, vertex_to_add, adjacency)
         
             already_in_U = [(u, gain) for u, gain in U_new if u == vertex_to_add]
             if len(already_in_U) > 0:
@@ -38,6 +40,8 @@ def update_gains(G, V_new, labels, U, new_vertex):
 def greedy_graph_growing(G):
     V = G.nodes()    
     card = len(V)
+    
+    adjacency = nx.to_numpy_matrix(G, weight='weigh')
     
     random_index = randint(0, card - 1)
     chosen_vertex = V[random_index]
@@ -55,7 +59,7 @@ def greedy_graph_growing(G):
     new_vertex = chosen_vertex
     while len(V_new) < int(card / 2):
         print("iteration: " + str(len(V_new)))
-        U = update_gains(G, V_new, labels, U, new_vertex)
+        U = update_gains(G, V_new, labels, U, new_vertex, adjacency)
         print(U)
         new_vertex = U[0]
         #print("new_vertex: " + str(new_vertex))
@@ -67,13 +71,18 @@ def greedy_graph_growing(G):
         
     return labels
     
-file_name = 'graphs/graph50.txt'
+file_name = 'graphs/graph100.txt'
 G = load_graph(file_name)
+adjacency = nx.to_numpy_matrix(G, weight='weight')
+start = time.time()
+print("start time: " + str(start))
 new_labels = greedy_graph_growing(G)
+end = time.time()
+print("time difference: " + str(end - start))
 print("vertices: ")
 print(G.nodes())
 print("labels: ")
 print(new_labels)
-print("cut computed: " + str(cut(G, new_labels)))
+print("cut computed: " + str(cut(G, new_labels, adjacency)))
 
     

@@ -88,18 +88,18 @@ def find_max_gain(G, D1, D2):
     for difference1 in D1:
         vertex1 = difference1[0]
         first_difference = difference1[1]
-        print("vertex1: " + str(vertex1))
+        #print("vertex1: " + str(vertex1))
         stop = 1
         for difference2 in D2:
             vertex2 = difference2[0]
             second_difference = difference2[1]
             iteration_gain = first_difference + second_difference
-            print("vertex2: " + str(vertex2))
-            print("iteration_gain without edge: " + str(iteration_gain))
-            print()
+            #print("vertex2: " + str(vertex2))
+            #print("iteration_gain without edge: " + str(iteration_gain))
+            #print()
             if maxv1 != -1 and iteration_gain <= max_gain:
-                print("gain: " + str(max_gain))
-                print()
+                #print("gain: " + str(max_gain))
+                #print()
                 break
             edge = [(u, v, d) for u, v, d in E if (u == vertex1 and v == vertex2)
                         or (u == vertex2 and v == vertex1)]
@@ -126,9 +126,9 @@ def KernighanLin(G, labels):
         D1 = differences[0]
         D2 = differences[1]
         
-        print("first part differences: ")
+        #print("first part differences: ")
         print(D1)
-        print("second part differences: ")
+        #print("second part differences: ")
         print(D2)
         
         locked_vertices = []
@@ -152,21 +152,21 @@ def KernighanLin(G, labels):
             D1 = new_differences[0]
             D2 = new_differences[1]
             
-            print("D1 new: ")
+            #print("D1 new: ")
             print(D1)
-            print("D2 new: ")
+            #print("D2 new: ")
             print(D2)
             
-        print("candidates_one: ")
+        #print("candidates_one: ")
         print(candidates_one)
-        print("candidates_two: ")
+        #print("candidates_two: ")
         print(candidates_two)
-        print("gains: ")
+        #print("gains: ")
         print(gains)
         
         max_gain = max(gains)
         gain_index = gains.index(max_gain)
-        print("max gain found: " + str(max_gain))
+        #print("max gain found: " + str(max_gain))
         
         if max_gain > 0:
             gain_index = gains.index(max_gain)
@@ -180,13 +180,13 @@ def KernighanLin(G, labels):
             return(labels, current_cut)
             
     
-file_name = 'graphs/computeCutGraph.txt'
-G = load_graph(file_name)
-labels = [-1, 1, -1, -1, 1, 1]
-result = KernighanLin(G, labels)
-print("vertices: ")
-print(G.nodes)
-print("resulting labels: ")
-print(result[0])
-print("final cut: " + str(result[1]))
+#file_name = 'graphs/computeCutGraph.txt'
+#G = load_graph(file_name)
+#labels = [-1, 1, -1, -1, 1, 1]
+#result = KernighanLin(G, labels)
+#print("vertices: ")
+#print(G.nodes)
+#print("resulting labels: ")
+#print(result[0])
+#print("final cut: " + str(result[1]))
 

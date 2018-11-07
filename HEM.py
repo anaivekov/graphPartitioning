@@ -11,8 +11,8 @@ def HEM_coarsening(G):
     
     G_new = nx.Graph()
     
-    print("checking edges")
-    print(G.has_edge(1, 5))
+    #print("checking edges")
+    #print(G.has_edge(1, 5))
     
     while len(V) > 0:
         # randomly select a vertex 
@@ -20,15 +20,13 @@ def HEM_coarsening(G):
         chosen_vertex = V[random_index]
         found = 0
         E_aux = []
-        print(chosen_vertex)
+        #print(chosen_vertex)
         second_vertex = -1
         # select the edge of maximal weight
         weights = [d['weight'] for u, v, d in E_new if u == chosen_vertex or v == chosen_vertex]
-        for w in weights:
-            print(w)
         while True:
             max_weight = max(weights)
-            print("max weight: " + str(max_weight))
+            #print("max weight: " + str(max_weight))
             edges_to_coarsen = [(u, v, d) for u, v, d in E_new if (u == chosen_vertex or v == chosen_vertex)
                                                and d['weight'] == max_weight]
             for edge in edges_to_coarsen:
@@ -46,15 +44,15 @@ def HEM_coarsening(G):
         else:
             second_vertex = edge_to_coarsen[0]
         edge_to_coarsen_vertices = (chosen_vertex, second_vertex)
-        print("edge to coarsen: " + str(edge_to_coarsen))
+        #print("edge to coarsen: " + str(edge_to_coarsen))
         # add new vertex to the graf G_new
         G_new.add_node(chosen_vertex, {'parents': edge_to_coarsen_vertices})
         E_new.remove(edge_to_coarsen)
-        print(G_new.nodes(data=True))
+        #print(G_new.nodes(data=True))
         # make neighbors lists for the first vertex
         edges_to_neighbors = [(u, v, d) for u, v, d in E_new if (u == chosen_vertex or v == chosen_vertex)]
-        print("edges to neighbors:")
-        print(edges_to_neighbors)
+        #print("edges to neighbors:")
+        #print(edges_to_neighbors)
         for neighbor in edges_to_neighbors:
             if neighbor[0] == chosen_vertex:
                 the_neighbor = neighbor[1]
@@ -64,8 +62,8 @@ def HEM_coarsening(G):
             neighbors_second = [(u, v, d) for u, v, d in E_new if 
                                 (u == the_neighbor and v == second_vertex) or
                                 (u == second_vertex and v == the_neighbor)]
-            print("neighbors second:")
-            print(neighbors_second)
+            #print("neighbors second:")
+            #print(neighbors_second)
             if(len(neighbors_second) > 0):              # means the vertices have common neighbor
                 new_edge_weight = neighbor[2]['weight'] + neighbors_second[0][2]['weight']
                 E_aux.append((chosen_vertex, the_neighbor, {'weight': new_edge_weight}))
@@ -90,14 +88,9 @@ def HEM_coarsening(G):
         for edges in E_aux:
             E_new.append(edges)
             
-        print("neighbors_second after: ")
-        print(neighbors_second)
+        #print("neighbors_second after: ")
+        #print(neighbors_second)
             
-
-        
-        
-        # I haven't modified vertices weights because it is not needed 
-        # all of the vertices are of the same weight so it does not play any role
         #E_aux.remove(edge_to_coarsen)
         # add edges to the new graph
         #chosen_vertex_neighbors =
@@ -107,12 +100,18 @@ def HEM_coarsening(G):
         
         # remove coarsened vertices and corresponding edges
         V.remove(chosen_vertex)
-        print("second vertex:")
-        print(second_vertex)
+        #print("second vertex:")
+        #print(second_vertex)
         V.remove(second_vertex)
-        print(V)
+        #print(V)
+        print("added vertex " + str(len(G_new.nodes())))
+    return G_new
         
-file_name = 'graphs/graph26.txt'
+file_name = 'graphs/graph400.txt'
 
 G = load_graph(file_name)
-HEM_coarsening(G)
+G_new = HEM_coarsening(G)
+print(G.nodes())
+print("novi G ima " + str(len(G_new.nodes())) + " čvorova")
+for node in G_new.nodes(data=True):
+    print(node)

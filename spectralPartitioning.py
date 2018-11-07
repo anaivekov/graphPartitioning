@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from graphLoading import load_graph
 from partitioningFunctions import cut
+import time
             
 #for node in G.nodes(data=True):
 #    node[1]['color'] = 'blue'
@@ -45,9 +46,14 @@ def spectral_partitioning(G):
 
 #plt.show()
 
-file_name = 'graphs/graph50.txt'
+file_name = 'graphs/graph1000.txt'
 G = load_graph(file_name)
+start = time.time()
+print("start time: " + str(start))
 result = spectral_partitioning(G)
 print("labels: ")
 print(result)
-print("final cut: " + str(cut(G, result)))
+end = time.time()
+print("algorithm lasted: " + str(end - start))
+adjacency = nx.adjacency_matrix(G, weight='weight')
+print("final cut: " + str(cut(G, result, adjacency)))
