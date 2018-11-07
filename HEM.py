@@ -107,11 +107,12 @@ def HEM_coarsening(G):
         print("added vertex " + str(len(G_new.nodes())))
     return G_new
         
-file_name = 'graphs/graph400.txt'
-
-G = load_graph(file_name)
-G_new = HEM_coarsening(G)
-print(G.nodes())
-print("novi G ima " + str(len(G_new.nodes())) + " čvorova")
-for node in G_new.nodes(data=True):
-    print(node)
+if __name__ == "__main__":
+    file_name = 'graphs/graph1000.txt'
+    
+    G = load_graph(file_name)
+    G_new = HEM_coarsening(G)
+    print(G.nodes())
+    print("novi G ima " + str(len(G_new.nodes())) + " čvorova")
+    for node in G_new.nodes(data=True):
+        print(node)

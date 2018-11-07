@@ -4,14 +4,15 @@ import networkx as nx
 from graphLoading import load_graph
 from partitioningFunctions import cut, internal_cost, external_cost
 import operator
+import time
 
-def compute_IEcosts_differences(G, labels, locked=[]):
+def compute_IEcosts_differences(G, labels, graph_adjacency_matrix, locked=[]):
     V = G.nodes()
     D1 = []
     D2 = []
     for vertex in V:
-        vertex_external_cost = external_cost(G, labels, vertex)
-        vertex_internal_cost = internal_cost(G, labels, vertex)
+        vertex_external_cost = external_cost(G, labels, vertex, graph_adjacency_matrix)
+        vertex_internal_cost = internal_cost(G, labels, vertex, graph_adjacency_matrix)
         the_difference = vertex_external_cost - vertex_internal_cost
         
         vertex_index = V.index(vertex)
@@ -34,7 +35,7 @@ def update_differences(G, labels, locked, D1_old, D2_old, v1, v2):
     D1_new = []
     D2_new = []
     
-    print("gains after changing vertices " + str(v1) + " and " + str(v2) + ": ")
+    #print("gains after changing vertices " + str(v1) + " and " + str(v2) + ": ")
     
     for vertex in V:
         if vertex not in locked:
@@ -47,25 +48,25 @@ def update_differences(G, labels, locked, D1_old, D2_old, v1, v2):
             else:
                 vertex_gain = [gain for v, gain in D2_old if v == vertex]
             vertex_difference = vertex_gain[0]
-            print("vertex_difference of vertex " + str(vertex) + ": "
-                  + str(vertex_difference))
+            #print("vertex_difference of vertex " + str(vertex) + ": "
+            #      + str(vertex_difference))
             
             edge_one = [(u, v, d) for u, v, d in E if (u == vertex and v == v1)
                             or (u == v1 and v == vertex)]
-            print("edge one:")
-            print(edge_one)
+            #print("edge one:")
+            #print(edge_one)
             edge_one_weight = 0
             if(len(edge_one) > 0):
                 edge_one_weight = edge_one[0][2]['weight']
-            print("edge_one_weight between " + str(v1) + " and " + str(vertex) + ": "
-                  + str(edge_one_weight))           
+            #print("edge_one_weight between " + str(v1) + " and " + str(vertex) + ": "
+            #      + str(edge_one_weight))           
             edge_two = [(u, v, d) for u, v, d in E if (u == vertex and v == v2)
                             or (u == v2 and v == vertex)]
             edge_two_weight = 0
             if(len(edge_two) > 0):
                 edge_two_weight = edge_two[0][2]['weight']
-            print("edge_two_weight between " + str(v2) + " and " + str(vertex) + ": "
-                  + str(edge_two_weight))
+            #print("edge_two_weight between " + str(v2) + " and " + str(vertex) + ": "
+            #      + str(edge_two_weight))
                 
             if vertex_label == 1:
                 new_difference = vertex_difference + 2*edge_one_weight - 2 * edge_two_weight
@@ -79,7 +80,7 @@ def update_differences(G, labels, locked, D1_old, D2_old, v1, v2):
     
 
 def find_max_gain(G, D1, D2):
-    print("---------- find_max_gain function ----------")
+    #print("---------- find_max_gain function ----------")
     E = G.edges(data=True)
     max_gain = 0
     maxv1 = -1
@@ -117,19 +118,20 @@ def find_max_gain(G, D1, D2):
     return (maxv1, maxv2, max_gain)
         
 def KernighanLin(G, labels):
-    current_cut = cut(G, labels)
+    adjacency = nx.to_numpy_matrix(G, weight='weight')
+    current_cut = cut(G, labels, adjacency)
     V = G.nodes()
     card = len(V)
     
     while True:
-        differences = compute_IEcosts_differences(G, labels)
+        differences = compute_IEcosts_differences(G, labels, adjacency)
         D1 = differences[0]
         D2 = differences[1]
         
         #print("first part differences: ")
-        print(D1)
+        #print(D1)
         #print("second part differences: ")
-        print(D2)
+        #print(D2)
         
         locked_vertices = []
         candidates_one = []
@@ -153,16 +155,16 @@ def KernighanLin(G, labels):
             D2 = new_differences[1]
             
             #print("D1 new: ")
-            print(D1)
+            #print(D1)
             #print("D2 new: ")
-            print(D2)
+            #print(D2)
             
         #print("candidates_one: ")
-        print(candidates_one)
+        #print(candidates_one)
         #print("candidates_two: ")
-        print(candidates_two)
+        #print(candidates_two)
         #print("gains: ")
-        print(gains)
+        #print(gains)
         
         max_gain = max(gains)
         gain_index = gains.index(max_gain)
@@ -179,14 +181,25 @@ def KernighanLin(G, labels):
         else:
             return(labels, current_cut)
             
-    
-#file_name = 'graphs/computeCutGraph.txt'
-#G = load_graph(file_name)
-#labels = [-1, 1, -1, -1, 1, 1]
-#result = KernighanLin(G, labels)
-#print("vertices: ")
-#print(G.nodes)
-#print("resulting labels: ")
-#print(result[0])
-#print("final cut: " + str(result[1]))
+if __name__ == "__main__":
+    file_name = 'graphs/graph200.txt'
+    G = load_graph(file_name)
+    adjacency = nx.to_numpy_matrix(G, weight='weight')
+    labels = [1, 1, -1, -1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1, -1, 1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, 1,
+1, 1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, -1, -1, 
+1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, 1, -1, 1, 1, 1, 1, -1, -1, 1, 1, -1,
+1, 1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, -1, -1, 1, -1, -1, 1, 1, 1, 1, 1, 1, 1, 1,-1, -1, 1, 1, 1, 1, 1, -1,
+1, -1, -1, 1, -1, -1, 1, -1, 1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, -1, -1, -1, 1, 1, 1,-1, -1, -1, -1, 1, 1, 1, -1, 1, 1, 1, -1, 1, -1, -1, 1, 1, -1, -1]
+    poc_rez = cut(G, labels, adjacency)
+    print("početni rez: " + str(poc_rez))
+    start_time = time.time()
+    result = KernighanLin(G, labels)
+    end_time = time.time()
+    #print("vertices: ")
+    #print(G.nodes)
+    #print("resulting labels: ")
+    #print(result[0])
+    print("algorithm lasted: " + str(end_time - start_time))
+    print("final cut: " + str(result[1]))
+
 

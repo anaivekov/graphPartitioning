@@ -2,7 +2,7 @@
 
 from random import randint
 
-number_of_vertices = 400
+number_of_vertices = 500
 filename = "graphs/graph" + str(number_of_vertices) + ".txt"
 f = open(filename, "w+")
 

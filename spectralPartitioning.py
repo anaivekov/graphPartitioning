@@ -26,8 +26,8 @@ def spectral_partitioning(G):
             labels.append(-1)
         else:
             labels.append(1)
-    print("labels:")
-    print(labels)
+    #print("labels:")
+    #print(labels)
     
     return labels
 #    i = 0
@@ -46,14 +46,15 @@ def spectral_partitioning(G):
 
 #plt.show()
 
-file_name = 'graphs/graph1000.txt'
-G = load_graph(file_name)
-start = time.time()
-print("start time: " + str(start))
-result = spectral_partitioning(G)
-print("labels: ")
-print(result)
-end = time.time()
-print("algorithm lasted: " + str(end - start))
-adjacency = nx.adjacency_matrix(G, weight='weight')
-print("final cut: " + str(cut(G, result, adjacency)))
+if __name__ == "__main__":
+    file_name = 'graphs/graph100.txt'
+    G = load_graph(file_name)
+    start = time.time()
+    print("start time: " + str(start))
+    result = spectral_partitioning(G)
+    print("labels: ")
+    print(result)
+    end = time.time()
+    print("algorithm lasted: " + str(end - start))
+    adjacency = nx.adjacency_matrix(G, weight='weight')
+    print("final cut: " + str(cut(G, result, adjacency)))
