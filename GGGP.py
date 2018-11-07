@@ -54,6 +54,7 @@ def greedy_graph_growing(G):
         
     new_vertex = chosen_vertex
     while len(V_new) < int(card / 2):
+        print("iteration: " + str(len(V_new)))
         U = update_gains(G, V_new, labels, U, new_vertex)
         print(U)
         new_vertex = U[0]
@@ -66,7 +67,7 @@ def greedy_graph_growing(G):
         
     return labels
     
-file_name = 'graphs/computeCutGraph.txt'
+file_name = 'graphs/graph50.txt'
 G = load_graph(file_name)
 new_labels = greedy_graph_growing(G)
 print("vertices: ")

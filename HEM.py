@@ -112,7 +112,7 @@ def HEM_coarsening(G):
         V.remove(second_vertex)
         print(V)
         
-file_name = 'graphs/graph10weighted.txt'
+file_name = 'graphs/graph26.txt'
 
 G = load_graph(file_name)
 HEM_coarsening(G)
